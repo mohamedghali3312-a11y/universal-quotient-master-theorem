@@ -6,7 +6,7 @@
 [![Pure Lean 4](https://shields.io)](https://lean-lang.org)
 [![ORCID](https://shields.io)](https://orcid.org)
 [![License: MIT](https://shields.io)](https://opensource.org)
-[![DOI](https://zenodo.org)](https://doi.org)
+
 
 
 
