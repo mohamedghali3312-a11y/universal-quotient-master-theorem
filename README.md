@@ -1,3 +1,11 @@
+
+# Universal Quotient Master Theorem (`∀ n ≥ 7`) — Pure Lean 4 Formalization
+
+[![Universal Master Theorem CI](https://github.com)](https://github.com)
+[![DOI](https://shields.io)](https://doi.org)
+[![Pure Lean 4](https://shields.io)](https://lean-lang.org)
+[![ORCID](https://shields.io)](https://orcid.org)
+[![License: MIT](https://shields.io)](https://opensource.org)
 [![DOI](https://zenodo.org)](https://doi.org)
 
 # Universal Quotient Master Theorem (`∀ n ≥ 7`) — Pure Lean 4 Formalization
