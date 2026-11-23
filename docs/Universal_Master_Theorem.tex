@@ -1,0 +1,63 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\geometry{margin=2.3cm}
+
+\definecolor{codebg}{rgb}{0.96,0.97,0.98}
+\definecolor{darkblue}{rgb}{0.10,0.22,0.45}
+
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{darkblue!30},
+  numbers=none,
+  columns=fullflexible
+}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+
+\title{\textbf{Universal Quotient Master Theorem:\\
+Pure Lean~4 Formal Reduction for All $n \ge 7$\\
+(Erdős--Straus \& Collatz)}}
+
+\author{Mohamed Ghali \\
+\small Independent Researcher (France) $\cdot$ ORCID: \texttt{0009-0006-3364-5341} \\
+\small Repository: \texttt{://github.com}}
+
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We establish and mechanically certify in \textbf{pure Lean~4} (zero external dependencies, zero non-standard axioms) a \emph{Universal Master Theorem} quantified for every natural number $n \ge 7$ (\texttt{universalQuotientMasterTheoremForAllN}). Building on the constructive framework of ring projections onto finite quotients $\mathbb{Z}/m\mathbb{Z}$, we prove unconditionally that for every $n \ge 7$, either $n$ admits an explicit Egyptian fraction decomposition $4/n = 1/x + 1/y + 1/z$ ($834/840$ residue classes covered, i.e., \textbf{99.29\%}), or $n \bmod 840$ belongs strictly to the six critical quadratic residues $\{1, 121, 169, 289, 361, 529\}$ corresponding to the theoretical Mordell--Schinzel polynomial barrier. Simultaneously, for every $n \ge 2$, the Collatz map is certified strictly contracting within a bounded number of steps across $231/256$ residue classes (\textbf{90.23\%}). All proofs are verified by the Lean~4 kernel with strict auditing against \texttt{sorryAx}.
+\end{abstract}
+
+\section*{Methodological Note on Human--AI Collaboration}
+The algebraic architecture, modular sieve definitions, and theoretical formulation of this work were conceived and directed by the author. For developing the Python combinatorial residue-generation scripts, LaTeX typesetting, and Lean~4 tactic synthesis, the author utilized Large Language Models (LLMs) as computer-assisted formalization tools.
+
+In accordance with the standards of formal mathematics, every statement and proof was mechanically verified by the deterministic kernel of \textbf{Lean~4} (with zero external dependencies and automated \texttt{\#print axioms} verification confirming the complete absence of \texttt{sorryAx}), ensuring absolute mathematical soundness independent of the drafting process.
+
+\section{Algebraic Architecture and Critical Obstructions}
+
+Let $\mathrm{HasErdosStraus}(n)$ denote the existence of strictly positive integers $(x, y, z)$ satisfying $4xyz = n(yz + xz + xy)$, and let $\mathrm{HasCollatzDescent}(n)$ denote the existence of a finite stopping time $k \ge 1$ such that $T^{(k)}(n) = 7:
+                   Pure Lean 4 Formalization}},
+  year         = {2026},
+  month        = nov,
+  url          = {https://://github.com}
+}
+\end{lstlisting}
+
+\end{document}
