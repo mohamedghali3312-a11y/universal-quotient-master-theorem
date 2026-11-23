@@ -1,0 +1,32 @@
+name: Universal Master Theorem CI (Pure Lean 4)
+
+on: [push, pull_request]
+
+jobs:
+  verify-universal-master:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Lean 4
+        run: |
+          curl https://lean-lang.org -sSf | sh -s -- -y --default-toolchain leanprover/lean4:v4.14.0
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Generate reproducible Lean 4 proof (Python -> Lean 4)
+        run: |
+          python3 scripts/generate_master_lean.py
+
+      - name: Formal kernel verification & axiom audit
+        run: |
+          set -e
+          for file in theorems/*.lean; do
+            echo "=== Verifying $file ==="
+            OUTPUT=$(lean "$file" 2>&1)
+            echo "$OUTPUT"
+            if echo "$OUTPUT" | grep -qE "sorryAx|error:"; then
+              echo "Certification failed in $file: forbidden axiom or error detected."
+              exit 1
+            fi
+          done
