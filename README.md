@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org)](https://doi.org)
+
 # Universal Quotient Master Theorem (`∀ n ≥ 7`) — Pure Lean 4 Formalization
 
 [![Universal Master Theorem CI](https://github.com)](https://github.com)
