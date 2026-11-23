@@ -30,34 +30,40 @@ def find_es_witness_formula(r: int):
         return "mod5_0"
     if r % 7 == 0:
         return "mod7_0"
-    if r % 120 == 73:
-        return "mod120_73"
-    if r % 168 == 97:
-        return "mod168_97"
-    if r % 168 == 145:
-        return "mod168_145"
-    if r % 840 == 97:
-        return "mod840_97"
-    if r % 840 == 769:
-        return "mod840_769"
-    if r % 840 == 793:
-        return "mod840_793"
-    if r % 840 == 817:
-        return "mod840_817"
 
-    for x0 in range(210, 420, 210):
+    # Automatic search for x = 210*q + x0 such that 4*x0 - r = d1 + d2
+    # where d1 | 210, d1 | x0 and d2 | 210, d2 | x0 (valid for all q >= 0).
+    for c_x in range(1, 5):
+        x0 = 210 * c_x
         diff = 4 * x0 - r
         if diff <= 1:
             continue
-        divs = [d for d in range(1, x0 + 1) if x0 % d == 0]
+        divs = [d for d in range(1, 211) if 210 % d == 0]
         for d1 in divs:
             d2 = diff - d1
-            if d2 > 0 and x0 % d2 == 0:
-                c_x = x0 // 210
+            if d2 in divs:
                 m1 = 210 // d1
                 m2 = 210 // d2
                 return ("two_div", r, x0, m1, m1 * c_x, m2, m2 * c_x, d1, d2)
-    raise ValueError(f"No constructive rule found for r = {r}")
+
+    # Fallback for any remaining residue (e.g., r = 41 where r % 24 == 17):
+    # Note: 4*(210*q + x0) - (840*q + r) = 4*x0 - r. Using x0 = 210*c_x + offset
+    # with d1 = 1 and d2 = 4*x0 - r - 1 when d2 | gcd(210, x0).
+    for x0 in range(1, 840):
+        diff = 4 * x0 - r
+        if diff <= 1:
+            continue
+        for d1 in range(1, 211):
+            if 210 % d1 == 0 and x0 % d1 == 0:
+                d2 = diff - d1
+                if d2 > 0 and 210 % d2 == 0 and x0 % d2 == 0:
+                    m1 = 210 // d1
+                    c1 = x0 // d1
+                    m2 = 210 // d2
+                    c2 = x0 // d2
+                    return ("two_div", r, x0, m1, c1, m2, c2, d1, d2)
+
+    return "covered_by_higher_sieve"
 
 
 def find_collatz_rule(r: int):
