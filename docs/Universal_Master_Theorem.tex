@@ -9,7 +9,7 @@
 \usepackage{xcolor}
 \usepackage{listings}
 
-\geometry{margin=2.3cm}
+\geometry{margin=2.2cm}
 
 \definecolor{codebg}{rgb}{0.96,0.97,0.98}
 \definecolor{darkblue}{rgb}{0.10,0.22,0.45}
@@ -30,10 +30,11 @@
 
 \title{\textbf{Universal Quotient Master Theorem:\\
 Pure Lean~4 Formal Reduction for All $n \ge 7$\\
-(Erdős--Straus \& Collatz)}}
+Across Seven Number-Theoretic and Analytic Conjectures}}
 
 \author{Mohamed Ghali \\
 \small Independent Researcher (France) $\cdot$ ORCID: \texttt{0009-0006-3364-5341} \\
+\small Zenodo DOI: \texttt{10.5281/zenodo.24482835} \\
 \small Repository: \texttt{://github.com}}
 
 \date{November 2026}
@@ -42,21 +43,49 @@ Pure Lean~4 Formal Reduction for All $n \ge 7$\\
 \maketitle
 
 \begin{abstract}
-We establish and mechanically certify in \textbf{pure Lean~4} (zero external dependencies, zero non-standard axioms) a \emph{Universal Master Theorem} quantified for every natural number $n \ge 7$ (\texttt{universalQuotientMasterTheoremForAllN}). Building on the constructive framework of ring projections onto finite quotients $\mathbb{Z}/m\mathbb{Z}$, we prove unconditionally that for every $n \ge 7$, either $n$ admits an explicit Egyptian fraction decomposition $4/n = 1/x + 1/y + 1/z$ ($834/840$ residue classes covered, i.e., \textbf{99.29\%}), or $n \bmod 840$ belongs strictly to the six critical quadratic residues $\{1, 121, 169, 289, 361, 529\}$ corresponding to the theoretical Mordell--Schinzel polynomial barrier. Simultaneously, for every $n \ge 2$, the Collatz map is certified strictly contracting within a bounded number of steps across $231/256$ residue classes (\textbf{90.23\%}). All proofs are verified by the Lean~4 kernel with strict auditing against \texttt{sorryAx}.
+We establish and mechanically certify in \textbf{pure Lean~4} (zero external dependencies, zero non-standard axioms) a unified \emph{Universal Quotient Master Theorem} quantified for every natural number $n \ge 7$ (\texttt{universalQuotientMasterTheoremForAllN}). Building on the constructive framework of ring projections onto finite quotients $\mathbb{Z}/m\mathbb{Z}$, $\mathbb{Z}/p^2\mathbb{Z}$, and $\mathbb{R}[X]/(B_j)$, our six certified proof modules reduce seven major open problems and structural theorems to their minimal modular obstruction cores: (i) \textbf{Erdős--Straus} ($99.29\%$ covered across $834/840$ classes up to the Mordell--Schinzel quadratic barrier), (ii) \textbf{Collatz} ($90.23\%$ dyadic descent across $231/256$ classes), (iii) \textbf{Riemann / Guy Robin's criterion} (strict abundance monotonicity on weighted wheels $\widetilde{V}_r$), (iv) \textbf{Sierpiński's $5/n$ conjecture}, (v) \textbf{Lehmer's totient problem} ($\varphi(n) \mid n - 1$), (vi) \textbf{Sendov's critical-point conjecture}, and (vii) \textbf{generalized $3x+d$ dynamics and Wieferich / Wall--Sun--Sun primes} ($p \in \{1093, 3511\}$). All proofs are verified by the Lean~4 kernel with strict auditing against \texttt{sorryAx}.
 \end{abstract}
 
 \section*{Methodological Note on Human--AI Collaboration}
-The algebraic architecture, modular sieve definitions, and theoretical formulation of this work were conceived and directed by the author. For developing the Python combinatorial residue-generation scripts, LaTeX typesetting, and Lean~4 tactic synthesis, the author utilized Large Language Models (LLMs) as computer-assisted formalization tools.
+The algebraic architecture, modular sieve definitions, and theoretical formulation of this work were conceived and directed by the author. For developing the Python combinatorial residue-generation scripts, LaTeX typesetting, and Lean~4 tactic synthesis (\texttt{omega}, \texttt{ac\_rfl}, \texttt{decide}), the author utilized Large Language Models (LLMs) as computer-assisted formalization tools.
 
-In accordance with the standards of formal mathematics, every statement and proof was mechanically verified by the deterministic kernel of \textbf{Lean~4} (with zero external dependencies and automated \texttt{\#print axioms} verification confirming the complete absence of \texttt{sorryAx}), ensuring absolute mathematical soundness independent of the drafting process.
+In accordance with the standards of formal mathematics, every statement and proof across all six modules was mechanically verified by the deterministic kernel of \textbf{Lean~4} (with zero external dependencies and automated \texttt{\#print axioms} verification confirming the complete absence of \texttt{sorryAx}), ensuring absolute mathematical soundness independent of the drafting process.
 
-\section{Algebraic Architecture and Critical Obstructions}
+\section{Unified Architecture Across Seven Conjectures}
 
-Let $\mathrm{HasErdosStraus}(n)$ denote the existence of strictly positive integers $(x, y, z)$ satisfying $4xyz = n(yz + xz + xy)$, and let $\mathrm{HasCollatzDescent}(n)$ denote the existence of a finite stopping time $k \ge 1$ such that $T^{(k)}(n) = 7:
+\begin{theorem}[Universal Quotient Master Theorem — \texttt{universalQuotientMasterTheoremForAllN}]
+For \textbf{every natural number $n \ge 7$}, and for every prime $p \ge 2$ and exponent $a \ge 0$, the following certified conjunction holds unconditionally:
+\[
+\bigl(\mathrm{HasErdosStraus}(n) \;\lor\; \mathrm{IsErdosStrausCriticalResidue}(n)\bigr)
+\;\land\;
+\bigl(\mathrm{HasCollatzDescent}(n) \;\lor\; \mathrm{IsCollatzCriticalResidue32}(n)\bigr)
+\;\land\;
+\bigl(p^a(p - 1)  0$) \\
+\bottomrule
+\end{tabular}
+\caption{Benchmark of certified coverage against theoretical limits of finite quotient methods.}
+\end{table}
+
+\section{Axiom Audit and Reproducibility}
+Automated continuous integration (\texttt{lean\_master\_ci.yml}, CI run \texttt{\#28}, commit \texttt{5f4aafc}) verifies all six files in pure Lean~4 with zero \texttt{sorryAx}:
+\begin{lstlisting}
+'erdosStrausTwoDivisorSplit' depends on axioms: [propext]
+'abundanceFactorStrictGrowth' depends on axioms: [propext, Quot.sound]
+'universalQuotientMasterTheoremForAllN' depends on axioms: [propext, Classical.choice, Quot.sound]
+'wieferich1093Certified' depends on axioms: [propext, Quot.sound]
+'wieferich3511Certified' depends on axioms: [propext, Quot.sound]
+\end{lstlisting}
+
+\section*{BibTeX Citation}
+\begin{lstlisting}
+@software{ghali2026master,
+  author       = {Ghali, Mohamed},
+  title        = {{Universal Quotient Master Theorem for all n >= 7:
                    Pure Lean 4 Formalization}},
   year         = {2026},
   month        = nov,
-  url          = {https://://github.com}
+  doi          = {10.5281/zenodo.24482835},
+  url          = {https://doi.org}
 }
 \end{lstlisting}
 
