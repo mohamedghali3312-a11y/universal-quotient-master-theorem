@@ -25,8 +25,8 @@ theorem collatz3xPlusDEvenDescent (d m : Nat) (hm : 1 ≤ m) :
 -- Step 1 (odd): 3*(4m + 1) + (2j + 1) = 12m + 2j + 4 (even)
 -- Step 2 (even): 6m + j + 2
 -- Note: if j is even (d ≡ 1 mod 4), 6m + j + 2 is even => Step 3 gives 3m + j/2 + 1 < 4m + 1!
-theorem collatz3xPlusDMod4Eq1Descent (j m : Nat) (hm : j + 1 ≤ m) :
-    iter3xPlusD (4 * j + 1) 3 (4 * m + 1) < 4 * m + 1 := by
+theorem collatz3xPlusDMod4Eq1Descent (j m : Nat) (hm : 2 * j + 1 ≤ m) :
+    iter3xPlusD (8 * j + 1) 3 (4 * m + 1) < 4 * m + 1 := by
   dsimp [iter3xPlusD, step3xPlusD]
   omega
 
