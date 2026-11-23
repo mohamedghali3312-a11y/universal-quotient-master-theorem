@@ -3,8 +3,7 @@
 -- Author: Mohamed Ghali (ORCID: 0009-0006-3364-5341)
 -- ============================================================================
 
--- 1. Core Coprimality Obstruction: no integer d ≥ 2 can divide both n and n - 1.
-theorem not_dvd_both_n_and_pred (n d : Nat) (hn : 1 ≤ n) (hd : 2 ≤ d)
+theorem not_dvd_both_n_and_pred (n d : Nat) (hd : 2 ≤ d)
     (h_dvd_n : d ∣ n) (h_dvd_pred : d ∣ n - 1) : False := by
   rcases h_dvd_n with ⟨a, ha⟩
   rcases h_dvd_pred with ⟨b, hb⟩
@@ -14,42 +13,30 @@ theorem not_dvd_both_n_and_pred (n d : Nat) (hn : 1 ≤ n) (hd : 2 ≤ d)
   rw [Nat.mul_add, Nat.mul_one] at h_le
   omega
 
-
--- 2. Lehmer Totient Property Predicate (parametrized over any totient function phi)
 def IsLehmerNumber (phi : Nat → Nat) (n : Nat) : Prop :=
   2 ≤ n ∧ phi n ∣ n - 1
 
--- 3. Squarefree Obstruction Theorem:
--- If p ≥ 2 divides phi(n) whenever p^2 | n (standard Euler totient property),
--- then NO integer divisible by a square p^2 can be a Lehmer number.
 theorem lehmerSquarefreeObstruction
     (phi : Nat → Nat)
     (h_phi_sq : ∀ p n : Nat, 2 ≤ p → p * p ∣ n → p ∣ phi n)
     (n p : Nat) (hp : 2 ≤ p) (h_sq : p * p ∣ n) :
     ¬ IsLehmerNumber phi n := by
-  rintro ⟨hn, h_lehmer⟩
+  rintro ⟨_, h_lehmer⟩
   have h_p_phi : p ∣ phi n := h_phi_sq p n hp h_sq
   have h_p_pred : p ∣ n - 1 := Nat.dvd_trans h_p_phi h_lehmer
   have h_p_n : p ∣ n := Nat.dvd_trans ⟨p, rfl⟩ h_sq
-  exact not_dvd_both_n_and_pred n p (by omega) hp h_p_n h_p_pred
+  exact not_dvd_both_n_and_pred n p hp h_p_n h_p_pred
 
--- 4. Parity Obstruction Theorem:
--- Since phi(n) is even for all n ≥ 3, every Lehmer number n ≥ 3 must be odd.
 theorem lehmerMustBeOdd
     (phi : Nat → Nat)
     (h_phi_even : ∀ n : Nat, 3 ≤ n → 2 ∣ phi n)
     (n : Nat) (hn : 3 ≤ n) (h_lehmer : IsLehmerNumber phi n) :
     n % 2 = 1 := by
-   have h_coeff : 2 * (5 * q + 4) + 2 = 10 * (q + 1) := by omega
-  rw [h_coeff]
-  have c1 : 5 * 2 * 2 = 2 * 10 := rfl
-  calc 5 * (q + 1) * (2 * (5 * q + 4) * (q + 1)) * (2 * (5 * q + 4) * (q + 1))
-      = (5 * 2 * 2) * ((5 * q + 4) * (5 * q + 4) * (q + 1) * (q + 1) * (q + 1)) := by ac_rfl
-    _ = (2 * 10) * ((5 * q + 4) * (5 * q + 4) * (q + 1) * (q + 1) * (q + 1)) := by rw [c1]
-    _ = (5 * q + 4) * ((2 * (5 * q + 4) * (q + 1) * (q + 1)) * (10 * (q + 1))) := by ac_rfl
+  have h_2_phi : 2 ∣ phi n := h_phi_even n hn
+  have h_2_pred : 2 ∣ n - 1 := Nat.dvd_trans h_2_phi h_lehmer.2
+  rcases h_2_pred with ⟨k, hk⟩
+  omega
 
-
--- 5. Universal Master Dichotomy for Lehmer's Totient Conjecture (∀ n ≥ 3)
 def IsLehmerCandidateObstruction (n : Nat) : Prop :=
   n % 2 = 1 ∧ ∀ p : Nat, 2 ≤ p → ¬ (p * p ∣ n)
 
