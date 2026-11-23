@@ -18,7 +18,6 @@ termination_by exp
 def IsWieferichBase (a p : Nat) : Prop :=
   2 ≤ p ∧ powMod a (p - 1) (p * p) = 1
 
--- Projective Tower Lift Z/p²Z ↠ Z/pZ:
 theorem wieferichProjectiveLift (p val : Nat) (hp : 2 ≤ p)
     (h_mod_p2 : val % (p * p) = 1) :
     val % p = 1 := by
@@ -29,10 +28,12 @@ theorem wieferichProjectiveLift (p val : Nat) (hp : 2 ≤ p)
       _ = p * (p * (val / (p * p))) + 1 := by rw [Nat.mul_assoc]
   rw [h_eq, Nat.mul_add_mod, Nat.mod_eq_of_lt hp]
 
+set_option maxRecDepth 200000 in
 theorem wieferich1093Certified : IsWieferichBase 2 1093 := by
   refine ⟨by omega, ?_⟩
   decide
 
+set_option maxRecDepth 200000 in
 theorem wieferich3511Certified : IsWieferichBase 2 3511 := by
   refine ⟨by omega, ?_⟩
   decide
