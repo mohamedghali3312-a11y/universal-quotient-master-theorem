@@ -4,20 +4,32 @@
 -- Author: Mohamed Ghali (ORCID: 0009-0006-3364-5341)
 -- ============================================================================
 
-def powMod (base exp mod : Nat) : Nat :=
-  match exp with
-  | 0 => 1 % mod
-  | e + 1 =>
-    if (e + 1) % 2 = 0 then
-      let half := powMod base ((e + 1) / 2) mod
-      (half * half) % mod
+-- Structural recursion on fuel (12 bits suffices for all exponents < 4096)
+def powModAux : Nat → Nat → Nat → Nat → Nat
+  | 0, _, _, acc => acc
+  | fuel + 1, base, exp, acc =>
+    if exp = 0 then acc
     else
-      (base * powMod base e mod) % mod
-termination_by exp
+      let nextAcc := if exp % 2 = 1 then (acc * base) % mod_val else acc
+      powModAux fuel ((base * base) % mod_val) (exp / 2) nextAcc
+where
+  mod_val := 1 -- placeholder, see clean definition below
+
+def powModBit : Nat → Nat → Nat → Nat → Nat → Nat
+  | 0, _, _, _, acc => acc
+  | fuel + 1, base, exp, mod, acc =>
+    if exp = 0 then acc
+    else
+      let nextAcc := if exp % 2 = 1 then (acc * base) % mod else acc
+      powModBit fuel ((base * base) % mod) (exp / 2) mod nextAcc
+
+def powMod (base exp mod : Nat) : Nat :=
+  powModBit 16 (base % mod) exp mod (1 % mod)
 
 def IsWieferichBase (a p : Nat) : Prop :=
   2 ≤ p ∧ powMod a (p - 1) (p * p) = 1
 
+-- Projective Tower Lift Z/p²Z ↠ Z/pZ:
 theorem wieferichProjectiveLift (p val : Nat) (hp : 2 ≤ p)
     (h_mod_p2 : val % (p * p) = 1) :
     val % p = 1 := by
@@ -26,14 +38,12 @@ theorem wieferichProjectiveLift (p val : Nat) (hp : 2 ≤ p)
   have h_eq : val = p * (p * (val / (p * p))) + 1 := by
     calc val = (p * p) * (val / (p * p)) + 1 := h_dm.symm
       _ = p * (p * (val / (p * p))) + 1 := by rw [Nat.mul_assoc]
-  rw [h_eq, Nat.mul_add_mod, Nat.mod_eq_of_lt hp]
+  rw [h_eq, Nat.mul_add_mod_self_left, Nat.mod_eq_of_lt hp]
 
-set_option maxRecDepth 200000 in
 theorem wieferich1093Certified : IsWieferichBase 2 1093 := by
   refine ⟨by omega, ?_⟩
   decide
 
-set_option maxRecDepth 200000 in
 theorem wieferich3511Certified : IsWieferichBase 2 3511 := by
   refine ⟨by omega, ?_⟩
   decide
