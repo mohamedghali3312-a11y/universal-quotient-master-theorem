@@ -8,7 +8,12 @@ theorem not_dvd_both_n_and_pred (n d : Nat) (hn : 1 ≤ n) (hd : 2 ≤ d)
     (h_dvd_n : d ∣ n) (h_dvd_pred : d ∣ n - 1) : False := by
   rcases h_dvd_n with ⟨a, ha⟩
   rcases h_dvd_pred with ⟨b, hb⟩
+  have h_lt : d * b < d * a := by omega
+  have hb_lt_a : b < a := Nat.lt_of_mul_lt_mul_left h_lt
+  have h_le : d * (b + 1) ≤ d * a := Nat.mul_le_mul_left d hb_lt_a
+  rw [Nat.mul_add, Nat.mul_one] at h_le
   omega
+
 
 -- 2. Lehmer Totient Property Predicate (parametrized over any totient function phi)
 def IsLehmerNumber (phi : Nat → Nat) (n : Nat) : Prop :=
