@@ -13,22 +13,39 @@ def iter3xPlusD (d : Nat) : Nat → Nat → Nat
 def Has3xPlusDDescent (d n : Nat) : Prop :=
   ∃ k : Nat, 0 < k ∧ iter3xPlusD d k n < n
 
+-- Elementary single-step reduction lemmas (eliminating nested if-then-else)
+theorem step3xPlusD_even (d m : Nat) : step3xPlusD d (2 * m) = m := by
+  simp only [step3xPlusD]
+  split <;> omega
+
+theorem step3xPlusD_odd (d m : Nat) : step3xPlusD d (2 * m + 1) = 3 * (2 * m + 1) + d := by
+  simp only [step3xPlusD]
+  split <;> omega
+
 -- 1. Universal Even Descent (50% of all integers for ANY d)
 theorem collatz3xPlusDEvenDescent (d m : Nat) (hm : 1 ≤ m) :
     iter3xPlusD d 1 (2 * m) < 2 * m := by
-  simp only [iter3xPlusD, step3xPlusD]
+  simp only [iter3xPlusD, step3xPlusD_even]
   omega
 
 -- 2. Universal Mod 4 Descent for d ≡ 1 (mod 8)
 theorem collatz3xPlusDMod4Eq1Descent (j m : Nat) (hm : 2 * j + 1 ≤ m) :
     iter3xPlusD (8 * j + 1) 3 (4 * m + 1) < 4 * m + 1 := by
-  simp only [iter3xPlusD, step3xPlusD]
+  have h0 : 4 * m + 1 = 2 * (2 * m) + 1 := by omega
+  have h1 : 3 * (2 * (2 * m) + 1) + (8 * j + 1) = 2 * (6 * m + 4 * j + 2) := by omega
+  have h2 : 6 * m + 4 * j + 2 = 2 * (3 * m + 2 * j + 1) := by omega
+  simp only [iter3xPlusD]
+  rw [h0, step3xPlusD_odd, h1, step3xPlusD_even, h2, step3xPlusD_even]
   omega
 
 -- 3. Universal Mod 4 Descent for d ≡ 3 (mod 4)
 theorem collatz3xPlusDMod4Eq3Descent (j m : Nat) (hm : j + 1 ≤ m) :
     iter3xPlusD (4 * j + 3) 3 (4 * m + 3) < 4 * m + 3 := by
-  simp only [iter3xPlusD, step3xPlusD]
+  have h0 : 4 * m + 3 = 2 * (2 * m + 1) + 1 := by omega
+  have h1 : 3 * (2 * (2 * m + 1) + 1) + (4 * j + 3) = 2 * (6 * m + 2 * j + 6) := by omega
+  have h2 : 6 * m + 2 * j + 6 = 2 * (3 * m + j + 3) := by omega
+  simp only [iter3xPlusD]
+  rw [h0, step3xPlusD_odd, h1, step3xPlusD_even, h2, step3xPlusD_even]
   omega
 
 -- 4. Crandall 5x + 1 Operator and Exact Non-Trivial 10-Step Cycle at n = 13
@@ -43,7 +60,7 @@ theorem crandall5xPlus1Cycle13 : iter5xPlus1 10 13 = 13 := by
   decide
 
 -- 5. Universal 3x + d Master Dichotomy
-theorem generalizedCollatzMasterTheorem (d : Nat) (hd : d % 2 = 1) :
+theorem generalizedCollatzMasterTheorem (d : Nat) :
     ∀ n : Nat, 2 * d + 2 ≤ n →
       Has3xPlusDDescent d n ∨ (n % 4 = 1 ∨ n % 4 = 3) := by
   intro n hn
