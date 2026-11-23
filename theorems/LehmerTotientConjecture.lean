@@ -40,10 +40,14 @@ theorem lehmerMustBeOdd
     (h_phi_even : ∀ n : Nat, 3 ≤ n → 2 ∣ phi n)
     (n : Nat) (hn : 3 ≤ n) (h_lehmer : IsLehmerNumber phi n) :
     n % 2 = 1 := by
-  have h_2_phi : 2 ∣ phi n := h_phi_even n hn
-  have h_2_pred : 2 ∣ n - 1 := Nat.dvd_trans h_2_phi h_lehmer.2
-  rcases h_2_pred with ⟨k, hk⟩
-  omega
+   have h_coeff : 2 * (5 * q + 4) + 2 = 10 * (q + 1) := by omega
+  rw [h_coeff]
+  have c1 : 5 * 2 * 2 = 2 * 10 := rfl
+  calc 5 * (q + 1) * (2 * (5 * q + 4) * (q + 1)) * (2 * (5 * q + 4) * (q + 1))
+      = (5 * 2 * 2) * ((5 * q + 4) * (5 * q + 4) * (q + 1) * (q + 1) * (q + 1)) := by ac_rfl
+    _ = (2 * 10) * ((5 * q + 4) * (5 * q + 4) * (q + 1) * (q + 1) * (q + 1)) := by rw [c1]
+    _ = (5 * q + 4) * ((2 * (5 * q + 4) * (q + 1) * (q + 1)) * (10 * (q + 1))) := by ac_rfl
+
 
 -- 5. Universal Master Dichotomy for Lehmer's Totient Conjecture (∀ n ≥ 3)
 def IsLehmerCandidateObstruction (n : Nat) : Prop :=
